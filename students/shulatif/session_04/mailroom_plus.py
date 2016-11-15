@@ -1,18 +1,16 @@
-donors = [
-    ('Hilary Clinton', [100, 30, 10]),
-    ('Bernie Sanders', [20,40]),
-    ('Shu Latif', [10]),
-    ('God', [100]),
-    ('Steve Jobs', [90, 80, 12])
-    ]
-
 donor_dicts = [
-    {'name': 'Hilary Clinton', 'donations': [100, 30, 10]},
-    {'name': 'Bernie Sanders', 'donations': [20, 40]},
-    {'name': 'Shu Latif', 'donations': [10000]},
-    {'name': 'God', 'donations': [10000]},
-    {'name': 'Steve Jobs', 'donations': [90, 80, 20]}
+    {'first': 'Hilary', 'last': 'Clinton', 'donations': [100, 30, 10]},
+    {'first': 'Bernie', 'last': 'Sanders', 'donations': [20, 40]},
+    {'first': 'Shu', 'last': 'Latif', 'donations': [10000]},
+    {'first': 'God', 'last': '', 'donations': [10000]},
+    {'first': 'Steve', 'last': 'Jobs', 'donations': [90, 80, 20]}
                ]
+
+
+def write_letter(filename, letter):
+    file = open(filename, 'w+')
+    file.writelines(letter)
+    file.close()
 
 
 def printdonors():
@@ -23,9 +21,9 @@ def printdonors():
     """
     print('#==========================#')
     for donor in donor_dicts:
-        donation = sum(donor[1])
-        space = " " * (20 - (len(donor[0]) + len(str(donation))))
-        print('# {0} - ${1} {2}#'.format(donor[0], donation, space))
+        donation = sum(donor['donations'])
+        space = " " * (19 - (len(donor['first']) + len(donor['last']) + len(str(donation))))
+        print('# {first} {last} - ${donation} {space}#'.format(**donor, donation=donation, space=space))
     print('#==========================#')
 
 
@@ -35,14 +33,18 @@ def thankyou():
     :param donation: Donation Total
     :return: Prints out a thank you email to each donor.
     """
-    for donor in donors:
-        donation = sum(donor[1])
-        print('''
-        Dear {0},
-        Thank you for your donation of ${1} to the Coalition of Never Selecting Evil Neanderthal Trump! Together we can make sure our
+    for donor in donor_dicts:
+        print('Writing thank you note to {} {}.'.format(donor['first'], donor['last']))
+        donation = sum(donor['donations'])
+        letter = '''
+        Dear {0} {1},
+        Thank you for your donation of ${2} to the Coalition of Never Selecting Evil Neanderthal Trump! Together we can make sure our
         country does not succumb to hate and fear. Your money will go towards helping to educate the masses and expose
         Donald Trump for the fraud and opportunist that he is.
-        '''.format(donor[0], donation))
+        '''.format(donor['first'], donor['last'], donation)
+        filename = '{}_{}'.format(donor['first'], donor['last'])
+        print('\033[1m' + '\033[93m' + 'Wrote to file: {}'.format(filename) + '\033[0m')
+        write_letter(filename, letter)
 
 
 def finddonor(donor_name):
@@ -51,8 +53,8 @@ def finddonor(donor_name):
     :param donor_name:
     :return:
     """
-    for donor in donors:
-        if donor_name.lower() == donor[0].lower():
+    for donor in donor_dicts:
+        if donor_name == donor['first'] + ' ' + donor['last']:
             return donor
     return None
 
@@ -63,11 +65,12 @@ def creatreport():
     :return: donor, total, number of donations, average donations in a nice table.
     """
     print('{:25s}  |  {:11s} | {:9s} | {:12s}'.format('Donor Name', 'Total Donated', 'Number of Donations', 'Average Donations\n'))
-    for donor in donors:
-        avg = round(sum(donor[1])/ len(donor[1]))
-        total = sum(donor[1])
-        don_amt = len(donor[1])
-        print('{:25s} {:16.2f} {:15d} {:25.2f}'.format(donor[0], total, don_amt, avg))
+    for donor in donor_dicts:
+        avg = round(sum(donor['donations']) / len(donor['donations']))
+        total = sum(donor['donations'])
+        don_amt = len(donor['donations'])
+        name = donor['first'] + ' ' + donor['last']
+        print('{:25s} {:16.2f} {:15d} {:25.2f}'.format(name, total, don_amt, avg))
 
 
 def start():
@@ -82,6 +85,7 @@ def start():
         ty_input = input('''
 #======================================================#
 # Please make a selection from the following choices:  #
+#                                                      #
 # list - List donors and totals                        #
 # add - Add a new donor or donation                    #
 # 1 - Send a Thank You Note                            #
@@ -96,21 +100,27 @@ def start():
             printdonors()
             print('\n')
         elif ty_input.lower() == 'add':
-            donor_name = input('Donor Name: ')
+            donor_fname = input('Donor First Name: ')
+            donor_lname = input('Donor Last Name: ')
+            donor_name = {'first': donor_fname, 'last': donor_lname}
             donor = finddonor(donor_name)
             if donor is None:
                 amount = int(input('Enter donation amount $ '))
-                donor = (donor_name,[amount])
-                donors.append(donor)
+                donor_name.update(donations=[amount])
+                donor_dicts.append(donor_name)
+                #donor_dicts.append({'first': donor_fname, 'last': donor_lname, 'donation': amount})
+
             else:
-                amount = int(input('Enter donation amount $ '))
-                donor[1].append(amount)
+                for donor in donor_dicts:
+                    amount = int(input('Enter donation amount $ '))
+                    donor_dicts.append(amount)
+
         elif ty_input == '1':
             thankyou()
         elif ty_input == '2':
             creatreport()
         else:
-            print('I did not understand. Please try again.')
+            print('\033[1m' + '\033[93m' + 'I did not understand. Please try again.' + '\033[0m')
 
 if __name__ == '__main__':
     start()
