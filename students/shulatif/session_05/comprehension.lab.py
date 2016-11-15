@@ -16,5 +16,9 @@ food_prefs = {"name": "Chris",
               "salad": "greek",
               "pasta": "lasagna"}
 
-print('{0} is from {1}, and he likes {2}, {3}, {4}, and {5}'.format(prefs) for prefs in food_prefs)
+print('{name} is from {city}, and he likes {cake}, {fruit}, {salad}, and {pasta}'.format(prefs)
+      for prefs in food_prefs.values())
+
+test = [prefs for prefs in food_prefs]
+print(test)
 
