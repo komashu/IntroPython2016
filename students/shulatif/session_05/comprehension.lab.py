@@ -16,8 +16,8 @@ food_prefs = {"name": "Chris",
               "salad": "greek",
               "pasta": "lasagna"}
 
-print('{name} is from {city}, and he likes {cake}, {fruit}, {salad}, and {pasta}'.format(prefs)
-      for prefs in food_prefs.values())
+print('{name} is from {city} and he likes {cake} cake, {fruit}, {salad} salad, and {pasta}'.format(**food_prefs))
+
 
 test = [prefs for prefs in food_prefs]
 print(test)

@@ -1,4 +1,4 @@
-donor_dicts = [
+donor_list = [
     {'first': 'Hilary', 'last': 'Clinton', 'donations': [100, 30, 10]},
     {'first': 'Bernie', 'last': 'Sanders', 'donations': [20, 40]},
     {'first': 'Shu', 'last': 'Latif', 'donations': [10000]},
@@ -20,7 +20,7 @@ def printdonors():
     :return: Boxed list of donors and total donor amounts.
     """
     print('#==========================#')
-    for donor in donor_dicts:
+    for donor in donor_list:
         donation = sum(donor['donations'])
         space = " " * (19 - (len(donor['first']) + len(donor['last']) + len(str(donation))))
         print('# {first} {last} - ${donation} {space}#'.format(**donor, donation=donation, space=space))
@@ -33,7 +33,7 @@ def thankyou():
     :param donation: Donation Total
     :return: Prints out a thank you email to each donor.
     """
-    for donor in donor_dicts:
+    for donor in donor_list:
         print('Writing thank you note to {} {}.'.format(donor['first'], donor['last']))
         donation = sum(donor['donations'])
         letter = '''
@@ -53,12 +53,12 @@ def finddonor(donor_name):
     :param donor_name:
     :return:
     """
-
 ### THIS IS BROKEN ###
-    for donor in donor_dicts:
+    for donor in donor_list:
         if donor_name == donor['first'] + ' ' + donor['last']:
             return donor
-    return None
+        else:
+            return None
 
 
 def creatreport():
@@ -67,7 +67,7 @@ def creatreport():
     :return: donor, total, number of donations, average donations in a nice table.
     """
     print('{:25s}  |  {:11s} | {:9s} | {:12s}'.format('Donor Name', 'Total Donated', 'Number of Donations', 'Average Donations\n'))
-    for donor in donor_dicts:
+    for donor in donor_list:
         avg = round(sum(donor['donations']) / len(donor['donations']))
         total = sum(donor['donations'])
         don_amt = len(donor['donations'])
@@ -109,14 +109,10 @@ def start():
             if donor is None:
                 amount = int(input('Enter donation amount $ '))
                 donor_name.update(donations=[amount])
-                donor_dicts.append(donor_name)
-                #donor_dicts.append({'first': donor_fname, 'last': donor_lname, 'donation': amount})
-
+                donor_list.append(donor_name)
             else:
-                for donor in donor_dicts:
-                    amount = int(input('Enter donation amount $ '))
-                    donor_dicts.append(amount)
-
+                amount = int(input('Enter donation amount $ '))
+                donor.update(donations=[amount])
         elif ty_input == '1':
             thankyou()
         elif ty_input == '2':
